@@ -38,8 +38,35 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/", (req, res) => {});
+router.put("/cars/:id", (req, res) => {
+  const update = req.body;
+  db("cars")
+    .where("id", "=", req.params.id)
+    .update(update)
+    .then(car => {
+      res.status(200).json(car);
+    })
+    .catch(error => {
+      res.status(500).json({ message: "You done got smurfed!" });
+    });
+});
 
-router.delete("/", (req, res) => {});
+router.delete("/cars/:id", (req, res) => {
+  db("cars")
+    .where("id", "=", req.params.id)
+    .del()
+    .then(car => {
+      if (car > 0) {
+        res.status(200).json(car);
+      } else {
+        res
+          .status(404)
+          .json({ message: "There ain't no one here with that id!" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ error: "You done got smurfed!" });
+    });
+});
 
 module.exports = router;
